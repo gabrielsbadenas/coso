@@ -4,7 +4,8 @@ import random
 pygame.init()
 scale = 1
 pygame.display.set_caption("coso")
-font = pygame.font.SysFont("consolas",12*scale)
+font = pygame.font.SysFont("consolas", 12*scale)
+
 class Color:
     def __init__(self, r, g, b):
         self.r = r
@@ -22,6 +23,7 @@ class Coor:
         self.vel = vel
     def coor(self):
         return (self.x, self.y, self.w, self.w)
+#hay un error porque pone dos self.w
     def hit(self):
         return (self.x, self.y, self.x + self.w, self.y + self.w)
     
@@ -35,6 +37,7 @@ def img(png):
     return pygame.image.load('{}.png'.format(png))
 def trs(png,xy):
     return pygame.transform.scale(png,xy)
+
 negro = Color(7, 24, 33)
 oscuro = Color(48, 104, 80)
 claro = Color(134, 192, 108)
@@ -43,13 +46,16 @@ blanco = Color(224, 248, 207)
 win = Ventana(160*scale, 144*scale)
 player = Coor(72*scale, 64*scale, 16*scale, 16*scale, 1*scale)
 pokeball = Coor(random.randint(0, 148*scale), random.randint(0, 132*scale), 12*scale, 12*scale)
+
 pk = [img('pk0'),img('pk1'),img('pk2'),img('pk3'),img('pk4'),img('pk5'),
       img('pk6'),img('pk7'),img('pk8'),img('pk9'),img('pk10'),img('pk11')]
 fondo = [img('bg'),img('bg1'),img('bg2'),img('bg3'),img('bg4')]
+
 ball = img('ball')
 bg = fondo[2]
 bg = trs(bg,(win.x,win.y))
 ball = trs(ball,(12*scale,12*scale))
+
 for w in range(len(pk)):
     pk[w] = trs(pk[w],(16*scale,16*scale))
 clock = pygame.time.Clock()
@@ -71,24 +77,10 @@ def draw(anim, puntaje, time, bac):
     pygame.display.update()
     
 def comp(a,b):
-    comp = False
-    if (a[0] < b[0]) and (a[2] > b[0]):
-        if (a[1] < b[1]) and (b[1] < a[3]):
-            comp = True
-        elif (a[1] < b[3]) and (b[3] < a[3]):
-            comp = True
-        else:
-            comp = False
-    elif (a[0] < b[2]) and (a[2] > b[2]):
-        if (a[1] < b[1]) and (b[1] < a[3]):
-            comp = True
-        elif (a[1] < b[3]) and (b[3] < a[3]):
-            comp = True
-        else:
-            comp = False
-    else:
-        comp = False
-    return comp
+    return (
+        (a[0] < b[0] < a[2] or a[0] < b[2] < a[2]) 
+        and (a[1] < b[1] < a[3] or a[1] < b[3] < a[3])
+    )
 
 def runtime(limite):
     start = pygame.time.get_ticks()
@@ -203,6 +195,7 @@ def gameover(puntaje):
         Sprite(ui,(30*scale, 72*scale, 16*scale, 16*scale))
         pygame.display.update()
     return fin
+
 def title():
     run = True
     title = img('title')
@@ -214,6 +207,7 @@ def title():
                 run = False
         Sprite(title,(0,0,win.x*scale,win.y*scale))
         pygame.display.update()
+
 def main():
     correrse = True
     title()
@@ -224,5 +218,6 @@ def main():
         fin = gameover(puntaje)
         if not fin:
             correrse = False
+
 main()
 pygame.quit()
